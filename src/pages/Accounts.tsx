@@ -39,14 +39,14 @@ export default function Accounts() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Accounts</h1>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Accounts</h1>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openNew}><Plus className="mr-1 h-4 w-4" /> Add Account</Button>
+            <Button onClick={openNew} className="w-full sm:w-auto"><Plus className="mr-1 h-4 w-4" /> Add Account</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-[95vw] sm:max-w-lg">
             <DialogHeader><DialogTitle>{editing ? 'Edit' : 'New'} Account</DialogTitle></DialogHeader>
             <div className="grid gap-4 py-2">
               <div><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="My Checking" /></div>
@@ -72,24 +72,24 @@ export default function Accounts() {
         <Card><CardContent className="py-12 text-center text-muted-foreground">No accounts yet. Click "Add Account" to get started.</CardContent></Card>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
         {accounts.map((a) => {
           const bal = getAccountBalance(a.id);
           return (
             <Card key={a.id}>
-              <CardHeader className="flex flex-row items-start justify-between pb-2">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: `hsl(${ACCOUNT_TYPE_COLORS[a.type]})` }} />
-                  <CardTitle className="text-base">{a.name}</CardTitle>
+              <CardHeader className="flex flex-row items-start justify-between p-3 pb-1 sm:p-6 sm:pb-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="h-3 w-3 rounded-full flex-shrink-0" style={{ backgroundColor: `hsl(${ACCOUNT_TYPE_COLORS[a.type]})` }} />
+                  <CardTitle className="text-sm sm:text-base truncate">{a.name}</CardTitle>
                 </div>
-                <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(a)}><Pencil className="h-3.5 w-3.5" /></Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDelete(a.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                <div className="flex gap-1 flex-shrink-0">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={() => openEdit(a)}><Pencil className="h-3 w-3 sm:h-3.5 sm:w-3.5" /></Button>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 text-destructive" onClick={() => handleDelete(a.id)}><Trash2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" /></Button>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
                 <p className="text-xs text-muted-foreground">{a.bank} · {a.type}</p>
-                <p className={`mt-2 text-2xl font-bold ${bal < 0 ? 'text-destructive' : ''}`}>
+                <p className={`mt-1 sm:mt-2 text-xl sm:text-2xl font-bold ${bal < 0 ? 'text-destructive' : ''}`}>
                   ₹{bal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </p>
               </CardContent>
