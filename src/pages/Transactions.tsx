@@ -150,7 +150,7 @@ export default function Transactions() {
                     </TableCell>
                     <TableCell>{acct?.name ?? '—'}</TableCell>
                     <TableCell className={`text-right font-semibold ${t.type === 'expense' ? 'text-destructive' : 'text-emerald-500'}`}>
-                      {t.type === 'expense' ? '-' : '+'}${t.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      {t.type === 'expense' ? '-' : '+'}₹{t.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
