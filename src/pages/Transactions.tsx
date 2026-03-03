@@ -59,16 +59,16 @@ export default function Transactions() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Transactions</h1>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Transactions</h1>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openNew} disabled={accounts.length === 0}>
+            <Button onClick={openNew} disabled={accounts.length === 0} className="w-full sm:w-auto">
               <Plus className="mr-1 h-4 w-4" /> Add Transaction
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-[95vw] sm:max-w-lg">
             <DialogHeader><DialogTitle>{editing ? 'Edit' : 'New'} Transaction</DialogTitle></DialogHeader>
             <div className="grid gap-4 py-2">
               <div><Label>Account</Label>
@@ -101,16 +101,16 @@ export default function Transactions() {
         </Dialog>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <Select value={filterAccount} onValueChange={setFilterAccount}>
-          <SelectTrigger className="w-[180px]"><SelectValue placeholder="All accounts" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-[180px]"><SelectValue placeholder="All accounts" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All accounts</SelectItem>
             {accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={filterCategory} onValueChange={setFilterCategory}>
-          <SelectTrigger className="w-[180px]"><SelectValue placeholder="All categories" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-[180px]"><SelectValue placeholder="All categories" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All categories</SelectItem>
             {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
@@ -123,47 +123,81 @@ export default function Transactions() {
           {accounts.length === 0 ? 'Add an account first to start tracking transactions.' : 'No transactions found.'}
         </CardContent></Card>
       ) : (
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Account</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-                <TableHead className="w-[80px]" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((t) => {
-                const acct = accounts.find((a) => a.id === t.accountId);
-                return (
-                  <TableRow key={t.id}>
-                    <TableCell className="text-muted-foreground">{t.date}</TableCell>
-                    <TableCell className="font-medium">{t.description}</TableCell>
-                    <TableCell>
-                      <span className="inline-flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: `hsl(${CATEGORY_COLORS[t.category as Category]})` }} />
-                        {t.category}
-                      </span>
-                    </TableCell>
-                    <TableCell>{acct?.name ?? '—'}</TableCell>
-                    <TableCell className={`text-right font-semibold ${t.type === 'expense' ? 'text-destructive' : 'text-emerald-500'}`}>
-                      {t.type === 'expense' ? '-' : '+'}₹{t.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(t)}><Pencil className="h-3 w-3" /></Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => { deleteTransaction(t.id); toast.success('Deleted'); }}><Trash2 className="h-3 w-3" /></Button>
+        <>
+          {/* Mobile card view */}
+          <div className="space-y-3 md:hidden">
+            {filtered.map((t) => {
+              const acct = accounts.find((a) => a.id === t.accountId);
+              return (
+                <Card key={t.id}>
+                  <CardContent className="p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ backgroundColor: `hsl(${CATEGORY_COLORS[t.category as Category]})` }} />
+                          <span className="text-sm font-medium truncate">{t.description}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{t.category} · {acct?.name ?? '—'} · {t.date}</p>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </Card>
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                        <span className={`font-semibold text-sm ${t.type === 'expense' ? 'text-destructive' : 'text-emerald-500'}`}>
+                          {t.type === 'expense' ? '-' : '+'}₹{t.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </span>
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(t)}><Pencil className="h-3 w-3" /></Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => { deleteTransaction(t.id); toast.success('Deleted'); }}><Trash2 className="h-3 w-3" /></Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Desktop table view */}
+          <Card className="hidden md:block overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Account</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead className="w-[80px]" />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.map((t) => {
+                  const acct = accounts.find((a) => a.id === t.accountId);
+                  return (
+                    <TableRow key={t.id}>
+                      <TableCell className="text-muted-foreground">{t.date}</TableCell>
+                      <TableCell className="font-medium">{t.description}</TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: `hsl(${CATEGORY_COLORS[t.category as Category]})` }} />
+                          {t.category}
+                        </span>
+                      </TableCell>
+                      <TableCell>{acct?.name ?? '—'}</TableCell>
+                      <TableCell className={`text-right font-semibold ${t.type === 'expense' ? 'text-destructive' : 'text-emerald-500'}`}>
+                        {t.type === 'expense' ? '-' : '+'}₹{t.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(t)}><Pencil className="h-3 w-3" /></Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => { deleteTransaction(t.id); toast.success('Deleted'); }}><Trash2 className="h-3 w-3" /></Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Card>
+        </>
       )}
     </div>
   );
