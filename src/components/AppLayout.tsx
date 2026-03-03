@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Landmark, ArrowLeftRight, PiggyBank, Menu, X } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Landmark, ArrowLeftRight, PiggyBank, Menu, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const links = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -40,6 +42,14 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const { signOut, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('Signed out');
+    navigate('/landing');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,23 +63,32 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </nav>
           </div>
 
-          {/* Mobile hamburger — visible below md */}
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden h-9 w-9">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-4">
-              <div className="mb-6">
-                <span className="text-lg font-bold tracking-tight text-primary">💰 FinTrack</span>
-              </div>
-              <nav className="flex flex-col gap-1">
-                <NavLinks onClick={() => setOpen(false)} />
-              </nav>
-            </SheetContent>
-          </Sheet>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:inline-flex gap-1 text-muted-foreground">
+              <LogOut className="h-4 w-4" /> Sign Out
+            </Button>
+
+            {/* Mobile hamburger — visible below md */}
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden h-9 w-9">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64 p-4">
+                <div className="mb-6">
+                  <span className="text-lg font-bold tracking-tight text-primary">💰 FinTrack</span>
+                </div>
+                <nav className="flex flex-col gap-1">
+                  <NavLinks onClick={() => setOpen(false)} />
+                </nav>
+                <Button variant="ghost" size="sm" onClick={() => { setOpen(false); handleSignOut(); }} className="mt-4 w-full justify-start gap-2 text-muted-foreground">
+                  <LogOut className="h-4 w-4" /> Sign Out
+                </Button>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
       <main className="container px-4 py-4 sm:px-6 sm:py-6 lg:px-8">{children}</main>
