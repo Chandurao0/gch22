@@ -51,7 +51,7 @@ export default function BudgetPage() {
                   <SelectContent>{availableCategories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
-              <div><Label>Monthly Limit ($)</Label><Input type="number" min="0" step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })} /></div>
+              <div><Label>Monthly Limit (₹)</Label><Input type="number" min="0" step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })} /></div>
               <Button onClick={handleSave}>Save</Button>
             </div>
           </DialogContent>
@@ -80,12 +80,12 @@ export default function BudgetPage() {
                 <CardContent className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className={over ? 'text-destructive font-medium' : 'text-muted-foreground'}>
-                      ${s.toLocaleString('en-US', { minimumFractionDigits: 2 })} spent
+                      ₹{s.toLocaleString('en-IN', { minimumFractionDigits: 2 })} spent
                     </span>
-                    <span className="text-muted-foreground">${b.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })} limit</span>
+                    <span className="text-muted-foreground">₹{b.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })} limit</span>
                   </div>
                   <Progress value={pct} className={over ? '[&>div]:bg-destructive' : ''} />
-                  {over && <p className="text-xs font-medium text-destructive">Over budget by ${(s - b.amount).toFixed(2)}</p>}
+                  {over && <p className="text-xs font-medium text-destructive">Over budget by ₹{(s - b.amount).toFixed(2)}</p>}
                 </CardContent>
               </Card>
             );

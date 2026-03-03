@@ -10,7 +10,7 @@ import { ACCOUNT_TYPE_COLORS, type Account, type AccountType } from '@/types/fin
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const emptyForm = { name: '', bank: '', type: 'checking' as AccountType, currency: 'USD', initialBalance: 0 };
+const emptyForm = { name: '', bank: '', type: 'checking' as AccountType, currency: 'INR', initialBalance: 0 };
 
 export default function Accounts() {
   const { accounts, addAccount, updateAccount, deleteAccount, getAccountBalance } = useFinanceData();
@@ -90,7 +90,7 @@ export default function Accounts() {
               <CardContent>
                 <p className="text-xs text-muted-foreground">{a.bank} · {a.type}</p>
                 <p className={`mt-2 text-2xl font-bold ${bal < 0 ? 'text-destructive' : ''}`}>
-                  ${bal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  ₹{bal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </p>
               </CardContent>
             </Card>

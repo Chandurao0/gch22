@@ -31,7 +31,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <p className={`text-2xl font-bold ${c.color}`}>
-                ${Math.abs(c.value).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                ₹{Math.abs(c.value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 {c.label === 'Net Savings' && c.value < 0 && ' (-)'}
               </p>
             </CardContent>
@@ -61,7 +61,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <span className={`font-semibold ${bal < 0 ? 'text-destructive' : ''}`}>
-                    ${bal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    ₹{bal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </span>
                 </div>
               );
@@ -90,7 +90,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <span className={`font-semibold ${t.type === 'expense' ? 'text-destructive' : 'text-emerald-500'}`}>
-                    {t.type === 'expense' ? '-' : '+'}${t.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {t.type === 'expense' ? '-' : '+'}₹{t.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </span>
                 </div>
               );
